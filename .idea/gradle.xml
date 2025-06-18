@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/surf-vanish-api" />
+            <option value="$PROJECT_DIR$/surf-vanish-bukkit" />
             <option value="$PROJECT_DIR$/surf-vanish-core" />
             <option value="$PROJECT_DIR$/surf-vanish-velocity" />
           </set>
