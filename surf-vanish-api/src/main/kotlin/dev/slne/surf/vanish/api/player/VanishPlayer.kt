@@ -5,7 +5,9 @@ import java.util.UUID
 interface VanishPlayer {
     val uuid: UUID
     val name: String
-
     var vanished: Boolean
+
     fun canSee(other: UUID): Boolean
+    fun vanish()
+    fun reAppear()
 }

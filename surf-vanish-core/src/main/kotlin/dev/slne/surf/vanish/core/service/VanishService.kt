@@ -1,11 +1,12 @@
 package dev.slne.surf.vanish.core.service
 
 import dev.slne.surf.surfapi.core.api.util.requiredService
+import org.gradle.internal.impldep.jcifs.dcerpc.UUID
 
 interface VanishService {
-    fun setVanished(uuid: String, vanished: Boolean)
-    fun isVanished(uuid: String): Boolean
-    fun canSee(uuid: String, canSee: String): Boolean
+    fun setVanished(uuid: UUID, vanished: Boolean)
+    fun isVanished(uuid: UUID): Boolean
+    fun canSee(uuid: UUID, other: UUID): Boolean
 
     companion object {
         val INSTANCE = requiredService<VanishService>()
