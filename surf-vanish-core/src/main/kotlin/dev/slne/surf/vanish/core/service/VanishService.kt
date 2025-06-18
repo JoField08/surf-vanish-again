@@ -1,7 +1,7 @@
 package dev.slne.surf.vanish.core.service
 
 import dev.slne.surf.surfapi.core.api.util.requiredService
-import org.gradle.internal.impldep.jcifs.dcerpc.UUID
+import java.util.UUID
 
 interface VanishService {
     fun setVanished(uuid: UUID, vanished: Boolean)

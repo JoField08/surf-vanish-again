@@ -1,0 +1,4 @@
+announce-connection-change: true
+
+join-format: ""
+quit-format: ""

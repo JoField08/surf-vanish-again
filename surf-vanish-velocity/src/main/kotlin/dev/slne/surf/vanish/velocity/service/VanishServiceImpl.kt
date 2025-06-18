@@ -2,8 +2,8 @@ package dev.slne.surf.vanish.velocity.service
 
 import dev.slne.surf.surfapi.core.api.util.mutableObjectSetOf
 import dev.slne.surf.vanish.core.service.VanishService
+import java.util.UUID
 
-import org.gradle.internal.impldep.jcifs.dcerpc.UUID
 
 class VanishServiceImpl : VanishService {
     val vanishedPlayers = mutableObjectSetOf<UUID>()
@@ -13,7 +13,7 @@ class VanishServiceImpl : VanishService {
     }
 
     override fun isVanished(uuid: UUID): Boolean {
-        TODO("Not yet implemented")
+        return vanishedPlayers.contains(uuid)
     }
 
     override fun canSee(uuid: UUID, other: UUID): Boolean {

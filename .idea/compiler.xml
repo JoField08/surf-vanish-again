@@ -8,12 +8,14 @@
       <module name="surf-vanish.surf-vanish-api" options="-parameters" />
       <module name="surf-vanish.surf-vanish-api.main" options="-parameters" />
       <module name="surf-vanish.surf-vanish-api.test" options="-parameters" />
-      <module name="surf-vanish.surf-vanish-bukkit" options="-parameters" />
       <module name="surf-vanish.surf-vanish-bukkit.main" options="-parameters" />
       <module name="surf-vanish.surf-vanish-bukkit.test" options="-parameters" />
       <module name="surf-vanish.surf-vanish-core" options="-parameters" />
       <module name="surf-vanish.surf-vanish-core.main" options="-parameters" />
       <module name="surf-vanish.surf-vanish-core.test" options="-parameters" />
+      <module name="surf-vanish.surf-vanish-paper" options="-parameters" />
+      <module name="surf-vanish.surf-vanish-paper.main" options="-parameters" />
+      <module name="surf-vanish.surf-vanish-paper.test" options="-parameters" />
       <module name="surf-vanish.surf-vanish-velocity" options="-parameters" />
       <module name="surf-vanish.surf-vanish-velocity.main" options="-parameters" />
       <module name="surf-vanish.surf-vanish-velocity.test" options="-parameters" />
