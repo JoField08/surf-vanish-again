@@ -1,17 +1,18 @@
 package dev.slne.surf.vanish.velocity.service
 
 import dev.slne.surf.vanish.core.service.VanishService
+import org.gradle.internal.impldep.jcifs.dcerpc.UUID
 
 class VanishServiceImpl : VanishService {
-    override fun setVanished(uuid: String, vanished: Boolean) {
+    override fun setVanished(uuid: UUID, vanished: Boolean) {
         TODO("Not yet implemented")
     }
 
-    override fun isVanished(uuid: String): Boolean {
+    override fun isVanished(uuid: UUID): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun canSee(uuid: String, canSee: String): Boolean {
+    override fun canSee(uuid: UUID, other: UUID): Boolean {
         TODO("Not yet implemented")
     }
 }
