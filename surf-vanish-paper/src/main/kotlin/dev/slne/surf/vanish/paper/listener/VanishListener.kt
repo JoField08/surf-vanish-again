@@ -1,6 +1,7 @@
 package dev.slne.surf.vanish.paper.listener
 
 import com.github.retrooper.packetevents.PacketEvents
+import com.github.retrooper.packetevents.protocol.chat.RemoteChatSession
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
@@ -39,16 +40,17 @@ class VanishListener : PluginMessageListener {
         val player = Bukkit.getPlayer(uuid) ?: return
 
         if(vanish) {
-            forEachPlayer {
-                if(it.uniqueId != player.uniqueId && !player.hasPermission(VanishPermissionRegistry.VANISH_BYPASS)) {
-                    PacketEvents.getAPI().playerManager.sendPacket(it, WrapperPlayServerDestroyEntities(
-                        player.entityId
-                    ))
+            val destroyPacket = WrapperPlayServerDestroyEntities(
+                player.entityId
+            )
+            val removePacket = WrapperPlayServerPlayerInfoRemove(
+                player.uniqueId
+            )
 
-                    PacketEvents.getAPI().playerManager.sendPacket(it, WrapperPlayServerPlayerInfoRemove(
-                            player.uniqueId
-                        )
-                    )
+            forEachPlayer {
+                if(it != player && !player.hasPermission(VanishPermissionRegistry.VANISH_BYPASS)) {
+                    PacketEvents.getAPI().playerManager.sendPacket(it, destroyPacket)
+                    PacketEvents.getAPI().playerManager.sendPacket(it, removePacket)
                 }
             }
         } else {
@@ -58,8 +60,8 @@ class VanishListener : PluginMessageListener {
                     UserProfile(
                         player.uniqueId, player.name
                     ),
-                    false,
-                    0,
+                    true,
+                    player.ping,
                     player.gameMode.toPacketEvents(),
                     player.displayName(),
                     null
@@ -89,6 +91,14 @@ class VanishListener : PluginMessageListener {
                     player.velocity.z
                 )
             )
+
+            forEachPlayer {
+                if(it != player) {
+                    PacketEvents.getAPI().playerManager.sendPacket(it, infoPacket)
+                    PacketEvents.getAPI().playerManager.sendPacket(it, metaDataPacket)
+                    PacketEvents.getAPI().playerManager.sendPacket(it, spawnPacket)
+                }
+            }
         }
     }
 }
