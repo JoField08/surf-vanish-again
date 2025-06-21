@@ -5,6 +5,8 @@ import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.proxy.ProxyServer
+import com.velocitypowered.api.proxy.messages.ChannelIdentifier
+import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier
 import org.slf4j.Logger
 import kotlin.jvm.optionals.getOrNull
 
@@ -31,4 +33,5 @@ class VelocityMain @Inject constructor(
 }
 
 val plugin get() = VelocityMain.INSTANCE
+val channelIdentifier = MinecraftChannelIdentifier.create("surf-vanish", "vanish-updates")
 val container get() = plugin.proxy.pluginManager.getPlugin("surf-vanish-velocity").getOrNull() ?: error("The providing plugin container is not available. Got the plugin ID changed?")

@@ -6,7 +6,7 @@ import java.util.UUID
 interface VanishService {
     fun setVanished(uuid: UUID, vanished: Boolean)
     fun isVanished(uuid: UUID): Boolean
-    fun canSee(uuid: UUID, other: UUID): Boolean
+    fun canSeeVanished(uuid: UUID): Boolean
 
     companion object {
         val INSTANCE = requiredService<VanishService>()
