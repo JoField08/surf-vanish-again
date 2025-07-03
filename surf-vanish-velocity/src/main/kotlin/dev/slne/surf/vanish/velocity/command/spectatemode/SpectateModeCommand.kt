@@ -1,20 +1,20 @@
-package dev.slne.surf.vanish.velocity.command
+package dev.slne.surf.vanish.velocity.command.spectatemode
 
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.playerExecutor
+import dev.jorel.commandapi.kotlindsl.subcommand
 import dev.slne.surf.surfapi.core.api.font.toSmallCaps
-import dev.slne.surf.surfapi.core.api.messages.adventure.appendNewline
 import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.vanish.core.service.spectateModeService
 import dev.slne.surf.vanish.core.service.util.VanishPermissionRegistry
 import dev.slne.surf.vanish.core.service.vanishService
-import io.ktor.util.reflect.instanceOf
 import net.kyori.adventure.text.event.ClickEvent
 
 class SpectateModeCommand(commandName: String) : CommandAPICommand(commandName) {
     init {
         withPermission(VanishPermissionRegistry.SPECTATE_MODE_COMMAND)
+        subcommand(SpectateModeListCommand("list"))
 
         playerExecutor { player, _ ->
             if(spectateModeService.isSpectating(player.uniqueId)) {
