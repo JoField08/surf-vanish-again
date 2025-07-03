@@ -1,0 +1,181 @@
+package dev.slne.surf.vanish.velocity.service
+
+import com.google.auto.service.AutoService
+import dev.slne.surf.surfapi.core.api.font.toSmallCaps
+import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
+import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
+import dev.slne.surf.surfapi.core.api.util.mutableObjectSetOf
+import dev.slne.surf.vanish.core.service.SpectateModeService
+import dev.slne.surf.vanish.core.service.util.PluginMessageChannels
+import dev.slne.surf.vanish.core.service.util.VanishPermissionRegistry
+import dev.slne.surf.vanish.velocity.plugin
+import dev.slne.surf.vanish.velocity.util.displayKey
+import dev.slne.surf.vanish.velocity.util.toPluginChannel
+
+import it.unimi.dsi.fastutil.objects.ObjectSet
+import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.util.Services
+
+import java.io.ByteArrayOutputStream
+import java.io.DataOutputStream
+import java.util.UUID
+import java.util.concurrent.TimeUnit
+
+import kotlin.jvm.optionals.getOrNull
+
+@AutoService(SpectateModeService::class)
+class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
+    val spectateModePlayers = mutableObjectSetOf<UUID>()
+    val previousPlayers = mutableObject2ObjectMapOf<UUID, ArrayDeque<UUID>>()
+    val currentSpectating = mutableObject2ObjectMapOf<UUID, UUID>()
+
+    override fun startJob() {
+        plugin.proxy.scheduler.buildTask(plugin, Runnable {
+            for (uuid in this.spectateModePlayers) {
+                val player = plugin.proxy.getPlayer(uuid).getOrNull() ?: continue
+                val server = player.currentServer.getOrNull() ?: continue
+                val cachedCurrentlySpectating = this.currentSpectating[uuid]
+                val currentSpectatingName = when(cachedCurrentlySpectating == null) {
+                    true -> null
+                    false -> plugin.proxy.getPlayer(cachedCurrentlySpectating).getOrNull()?.username ?: "Unbekannt"
+                }
+
+                player.sendActionBar {
+                    buildText {
+                        primary("Zurück: ".toSmallCaps())
+                        displayKey("swapOffhand")
+                        spacer(" + ")
+                        displayKey("sneak")
+                        spacer(" - ")
+
+                        info(currentSpectatingName ?: "Kein Spieler ausgewählt")
+                        spacer(" | ")
+                        info(server.serverInfo.name)
+                        spacer(" | ")
+                        info(player.clientBrand ?: "Client unbekannt")
+
+                        spacer(" - ")
+                        primary("Weiter: ".toSmallCaps())
+                        displayKey("swapOffhand")
+
+//                        spacer("${plugin.currentDay()}, der ${plugin.currentDate()} um ${plugin.currentTime()}")
+//                        darkSpacer(" - ")
+//                        spacer("${server.server.playersConnected.size} Spieler")
+                    }
+                }
+            }
+        }).repeat(20L, TimeUnit.MILLISECONDS).schedule()
+    }
+
+    override fun isSpectating(uuid: UUID): Boolean {
+        return spectateModePlayers.contains(uuid)
+    }
+
+    override fun setSpectating(uuid: UUID, spectating: Boolean) {
+        if (spectating) {
+            spectateModePlayers.add(uuid)
+        } else {
+            spectateModePlayers.remove(uuid)
+        }
+    }
+
+    override fun getSpectators(): ObjectSet<UUID> {
+        return spectateModePlayers
+    }
+
+    override fun nextPlayer(uuid: UUID): UUID? {
+        val player = plugin.proxy.getPlayer(uuid).getOrNull() ?: return null
+        val playerServerName = player.currentServer.getOrNull()?.serverInfo?.name ?: return null
+
+        val candidates = plugin.proxy.allPlayers
+            .filter { it.uniqueId != uuid }
+            .filter { it.currentServer.getOrNull()?.serverInfo?.name == playerServerName }
+            .filter { !it.hasPermission(VanishPermissionRegistry.SPECTATE_MODE_BYPASS) }
+
+        if (candidates.isEmpty()) {
+            player.sendActionBar {
+                buildText {
+                    error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
+                    decorate(TextDecoration.BOLD)
+                }
+            }
+            return null
+        }
+
+        val current = currentSpectating[uuid]
+        val next = if (current == null) {
+            candidates.randomOrNull()
+        } else {
+            candidates
+                .filter { it.uniqueId != current }
+                .randomOrNull()
+        }
+
+        if (next == null) {
+            player.sendActionBar {
+                buildText {
+                    error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
+                    decorate(TextDecoration.BOLD)
+                }
+            }
+            return null
+        }
+
+        currentSpectating[uuid] = next.uniqueId
+        previousPlayers.computeIfAbsent(uuid) { ArrayDeque() }.addLast(next.uniqueId)
+        pushTeleport(uuid, next.uniqueId)
+
+        return next.uniqueId
+    }
+
+
+    override fun previousPlayer(uuid: UUID): UUID? {
+        val player = plugin.proxy.getPlayer(uuid).getOrNull() ?: return null
+        val history = previousPlayers[uuid]
+
+        if(history == null || history.isEmpty()) {
+            player.sendActionBar {
+                buildText {
+                    error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
+                    decorate(TextDecoration.BOLD)
+                }
+            }
+            return null
+        }
+
+        if (history.size < 2) {
+            player.sendActionBar {
+                buildText {
+                    error("Es wurde kein vorheriger Spieler gefunden, den du beobachten kannst.".toSmallCaps())
+                    decorate(TextDecoration.BOLD)
+                }
+            }
+            return null
+        }
+
+        history.removeLast()
+        val previousPlayer = history.removeLast()
+        currentSpectating[player.uniqueId] = previousPlayer
+
+        pushTeleport(player.uniqueId, previousPlayer)
+
+        return previousPlayer
+    }
+
+    override fun viewInventory(uuid: UUID, target: UUID) {
+
+    }
+
+    fun pushTeleport(uuid: UUID, target: UUID) {
+        val player = plugin.proxy.getPlayer(uuid).getOrNull() ?: return
+        val server = player.currentServer.getOrNull() ?: return
+
+        val outputStream = ByteArrayOutputStream()
+        val dataOutput = DataOutputStream(outputStream)
+
+        dataOutput.writeUTF(uuid.toString())
+        dataOutput.writeUTF(target.toString())
+
+        server.sendPluginMessage(PluginMessageChannels.SPECTATE_MODE_UPDATES.toPluginChannel(), outputStream.toByteArray())
+    }
+}

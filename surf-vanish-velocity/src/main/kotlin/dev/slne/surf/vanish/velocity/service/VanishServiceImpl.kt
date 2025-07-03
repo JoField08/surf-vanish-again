@@ -4,10 +4,11 @@ import com.google.auto.service.AutoService
 
 import dev.slne.surf.surfapi.core.api.util.mutableObjectSetOf
 import dev.slne.surf.vanish.core.service.VanishService
+import dev.slne.surf.vanish.core.service.util.PluginMessageChannels
 import dev.slne.surf.vanish.core.service.util.VanishPermissionRegistry
-import dev.slne.surf.vanish.velocity.channelIdentifier
 import dev.slne.surf.vanish.velocity.plugin
 import dev.slne.surf.vanish.velocity.util.hasPermission
+import dev.slne.surf.vanish.velocity.util.toPluginChannel
 
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
@@ -47,6 +48,6 @@ class VanishServiceImpl : VanishService {
         dataOutput.writeUTF(uuid.toString())
         dataOutput.writeBoolean(vanished)
 
-        server.sendPluginMessage(channelIdentifier, outputStream.toByteArray())
+        server.sendPluginMessage(PluginMessageChannels.VANISH_UPDATES.toPluginChannel(), outputStream.toByteArray())
     }
 }

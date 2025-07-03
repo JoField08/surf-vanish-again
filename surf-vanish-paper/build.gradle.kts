@@ -9,7 +9,7 @@ dependencies {
 }
 
 surfPaperPluginApi {
-    mainClass("dev.slne.surf.vanish.bukkit.BukkitMain")
+    mainClass("dev.slne.surf.vanish.paper.PaperMain")
     authors.add("red")
     generateLibraryLoader(false)
 

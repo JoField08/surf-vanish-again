@@ -1,5 +1,8 @@
 package dev.slne.surf.vanish.velocity
 
+import com.github.retrooper.packetevents.PacketEvents
+import com.github.retrooper.packetevents.event.PacketEvent
+import com.github.retrooper.packetevents.event.PacketListenerPriority
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
@@ -7,6 +10,12 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.proxy.ProxyServer
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier
+import dev.slne.surf.vanish.core.service.spectateModeService
+import dev.slne.surf.vanish.core.service.util.PluginMessageChannels
+import dev.slne.surf.vanish.velocity.command.SpectateModeCommand
+import dev.slne.surf.vanish.velocity.command.VanishCommand
+import dev.slne.surf.vanish.velocity.listener.PlayerPacketListener
+import dev.slne.surf.vanish.velocity.util.toPluginChannel
 import org.slf4j.Logger
 import kotlin.jvm.optionals.getOrNull
 
@@ -22,8 +31,15 @@ class VelocityMain @Inject constructor(
     @Subscribe
     fun onInitialization(event: ProxyInitializeEvent) {
         INSTANCE = this
+        proxy.channelRegistrar.register(PluginMessageChannels.VANISH_UPDATES.toPluginChannel())
+        proxy.channelRegistrar.register(PluginMessageChannels.SPECTATE_MODE_UPDATES.toPluginChannel())
+
+        spectateModeService.startJob()
+        PacketEvents.getAPI().eventManager.registerListener(PlayerPacketListener(), PacketListenerPriority.NORMAL)
 
 
+        SpectateModeCommand("spectatemode").register()
+        VanishCommand("vanish").register()
     }
 
     companion object {
@@ -33,5 +49,4 @@ class VelocityMain @Inject constructor(
 }
 
 val plugin get() = VelocityMain.INSTANCE
-val channelIdentifier = MinecraftChannelIdentifier.create("surf-vanish", "vanish-updates")
 val container get() = plugin.proxy.pluginManager.getPlugin("surf-vanish-velocity").getOrNull() ?: error("The providing plugin container is not available. Got the plugin ID changed?")
