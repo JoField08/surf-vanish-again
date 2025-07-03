@@ -14,6 +14,8 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPl
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity
 import dev.slne.surf.surfapi.bukkit.api.util.forEachPlayer
+import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
+import dev.slne.surf.vanish.core.service.util.PluginMessageChannels
 import dev.slne.surf.vanish.core.service.util.VanishPermissionRegistry
 import dev.slne.surf.vanish.paper.util.toPacketEvents
 import org.bukkit.Bukkit
@@ -29,7 +31,7 @@ class VanishListener : PluginMessageListener {
         player: Player,
         message: ByteArray
     ) {
-        if(channel != "surf-vanish:vanish-updates") {
+        if(channel != PluginMessageChannels.VANISH_UPDATES) {
             return
         }
 
@@ -51,6 +53,11 @@ class VanishListener : PluginMessageListener {
                 if(it != player && !player.hasPermission(VanishPermissionRegistry.VANISH_BYPASS)) {
                     PacketEvents.getAPI().playerManager.sendPacket(it, destroyPacket)
                     PacketEvents.getAPI().playerManager.sendPacket(it, removePacket)
+                }
+
+                player.sendText {
+                    appendPrefix()
+                    info("DEBUG: $player vanished.")
                 }
             }
         } else {
@@ -97,6 +104,11 @@ class VanishListener : PluginMessageListener {
                     PacketEvents.getAPI().playerManager.sendPacket(it, infoPacket)
                     PacketEvents.getAPI().playerManager.sendPacket(it, metaDataPacket)
                     PacketEvents.getAPI().playerManager.sendPacket(it, spawnPacket)
+                }
+
+                player.sendText {
+                    appendPrefix()
+                    info("DEBUG: $player reappeared")
                 }
             }
         }

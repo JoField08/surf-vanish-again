@@ -13,7 +13,7 @@ import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier
 import dev.slne.surf.vanish.core.service.spectateModeService
 import dev.slne.surf.vanish.core.service.util.PluginMessageChannels
 import dev.slne.surf.vanish.velocity.command.spectatemode.SpectateModeCommand
-import dev.slne.surf.vanish.velocity.command.VanishCommand
+import dev.slne.surf.vanish.velocity.command.vanish.VanishCommand
 import dev.slne.surf.vanish.velocity.listener.PlayerPacketListener
 import dev.slne.surf.vanish.velocity.util.toPluginChannel
 import org.slf4j.Logger

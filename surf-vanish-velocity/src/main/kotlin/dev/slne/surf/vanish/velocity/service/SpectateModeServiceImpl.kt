@@ -97,6 +97,7 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
         if (candidates.isEmpty()) {
             player.sendMessage {
                 buildText {
+                    appendPrefix()
                     error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
                     decorate(TextDecoration.BOLD)
                 }
@@ -116,6 +117,7 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
         if (next == null) {
             player.sendMessage {
                 buildText {
+                    appendPrefix()
                     error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
                     decorate(TextDecoration.BOLD)
                 }
@@ -138,6 +140,7 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
         if(history == null || history.isEmpty()) {
             player.sendMessage {
                 buildText {
+                    appendPrefix()
                     error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
                     decorate(TextDecoration.BOLD)
                 }
@@ -148,6 +151,7 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
         if (history.size < 2) {
             player.sendMessage {
                 buildText {
+                    appendPrefix()
                     error("Es wurde kein vorheriger Spieler gefunden, den du beobachten kannst.".toSmallCaps())
                     decorate(TextDecoration.BOLD)
                 }
