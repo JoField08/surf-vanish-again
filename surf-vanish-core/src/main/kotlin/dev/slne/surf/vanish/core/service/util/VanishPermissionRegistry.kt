@@ -12,6 +12,7 @@ object VanishPermissionRegistry {
     const val VANISH_LIST = "$PREFIX.list"
 
     const val SPECTATE_MODE_COMMAND = "$PREFIX.spectatemode.command"
+    const val SPECTATE_MODE_LIST = "$PREFIX.spectatemode.list"
     const val SPECTATE_MODE_TOGGLE = "$PREFIX.spectatemode.toggle"
     const val SPECTATE_MODE_NEXT = "$PREFIX.spectatemode.next"
     const val SPECTATE_MODE_PREVIOUS = "$PREFIX.spectatemode.previous"

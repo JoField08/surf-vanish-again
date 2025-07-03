@@ -1,6 +1,7 @@
 package dev.slne.surf.vanish.velocity.service
 
 import com.google.auto.service.AutoService
+
 import dev.slne.surf.surfapi.core.api.font.toSmallCaps
 import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
 import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
@@ -13,6 +14,7 @@ import dev.slne.surf.vanish.velocity.util.displayKey
 import dev.slne.surf.vanish.velocity.util.toPluginChannel
 
 import it.unimi.dsi.fastutil.objects.ObjectSet
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.util.Services
 
@@ -35,9 +37,9 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
                 val player = plugin.proxy.getPlayer(uuid).getOrNull() ?: continue
                 val server = player.currentServer.getOrNull() ?: continue
                 val cachedCurrentlySpectating = this.currentSpectating[uuid]
-                val currentSpectatingName = when(cachedCurrentlySpectating == null) {
+                val currentSpectatingPlayer = when(cachedCurrentlySpectating == null) {
                     true -> null
-                    false -> plugin.proxy.getPlayer(cachedCurrentlySpectating).getOrNull()?.username ?: "Unbekannt"
+                    false -> plugin.proxy.getPlayer(cachedCurrentlySpectating).getOrNull()
                 }
 
                 player.sendActionBar {
@@ -48,19 +50,15 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
                         displayKey("sneak")
                         spacer(" - ")
 
-                        info(currentSpectatingName ?: "Kein Spieler ausgewählt")
+                        info(currentSpectatingPlayer?.username ?: "Kein Spieler ausgewählt")
                         spacer(" | ")
-                        info(server.serverInfo.name)
+                        info(currentSpectatingPlayer?.currentServer?.getOrNull()?.serverInfo?.name ?: "Server unbekannt")
                         spacer(" | ")
-                        info(player.clientBrand ?: "Client unbekannt")
+                        info(currentSpectatingPlayer?.clientBrand ?: "Client unbekannt")
 
                         spacer(" - ")
                         primary("Weiter: ".toSmallCaps())
                         displayKey("swapOffhand")
-
-//                        spacer("${plugin.currentDay()}, der ${plugin.currentDate()} um ${plugin.currentTime()}")
-//                        darkSpacer(" - ")
-//                        spacer("${server.server.playersConnected.size} Spieler")
                     }
                 }
             }
@@ -76,6 +74,10 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
             spectateModePlayers.add(uuid)
         } else {
             spectateModePlayers.remove(uuid)
+
+            val player = plugin.proxy.getPlayer(uuid).getOrNull() ?: return
+
+            player.sendActionBar(Component.empty())
         }
     }
 
@@ -93,7 +95,7 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
             .filter { !it.hasPermission(VanishPermissionRegistry.SPECTATE_MODE_BYPASS) }
 
         if (candidates.isEmpty()) {
-            player.sendActionBar {
+            player.sendMessage {
                 buildText {
                     error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
                     decorate(TextDecoration.BOLD)
@@ -112,7 +114,7 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
         }
 
         if (next == null) {
-            player.sendActionBar {
+            player.sendMessage {
                 buildText {
                     error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
                     decorate(TextDecoration.BOLD)
@@ -134,7 +136,7 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
         val history = previousPlayers[uuid]
 
         if(history == null || history.isEmpty()) {
-            player.sendActionBar {
+            player.sendMessage {
                 buildText {
                     error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
                     decorate(TextDecoration.BOLD)
@@ -144,7 +146,7 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
         }
 
         if (history.size < 2) {
-            player.sendActionBar {
+            player.sendMessage {
                 buildText {
                     error("Es wurde kein vorheriger Spieler gefunden, den du beobachten kannst.".toSmallCaps())
                     decorate(TextDecoration.BOLD)
