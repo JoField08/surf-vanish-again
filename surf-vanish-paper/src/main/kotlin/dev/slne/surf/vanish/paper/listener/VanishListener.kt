@@ -86,7 +86,14 @@ class VanishListener : PluginMessageListener {
             profile.textureProperties.addAll(player.playerProfile.properties.map { it.toTextureProperty() })
 
             val addPacket = WrapperPlayServerPlayerInfoUpdate(
-                WrapperPlayServerPlayerInfoUpdate.Action.ADD_PLAYER,
+                EnumSet.of(
+                    WrapperPlayServerPlayerInfoUpdate.Action.ADD_PLAYER,
+                    WrapperPlayServerPlayerInfoUpdate.Action.UPDATE_DISPLAY_NAME,
+                    WrapperPlayServerPlayerInfoUpdate.Action.UPDATE_GAME_MODE,
+                    WrapperPlayServerPlayerInfoUpdate.Action.UPDATE_LATENCY,
+                    WrapperPlayServerPlayerInfoUpdate.Action.UPDATE_LISTED,
+                    WrapperPlayServerPlayerInfoUpdate.Action.INITIALIZE_CHAT,
+                    ),
                 WrapperPlayServerPlayerInfoUpdate.PlayerInfo(
                     profile,
                     true,
