@@ -9,6 +9,7 @@ import dev.slne.surf.vanish.core.service.util.VanishPermissionRegistry
 import dev.slne.surf.vanish.velocity.plugin
 import dev.slne.surf.vanish.velocity.util.hasPermission
 import dev.slne.surf.vanish.velocity.util.toPluginChannel
+import it.unimi.dsi.fastutil.objects.ObjectSet
 
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
@@ -36,6 +37,10 @@ class VanishServiceImpl : VanishService {
 
     override fun canSeeVanished(uuid: UUID): Boolean {
         return uuid.hasPermission(VanishPermissionRegistry.VANISH_BYPASS)
+    }
+
+    override fun getVanishedPlayers(): ObjectSet<UUID> {
+        return vanishedPlayers
     }
 
     fun pushUpdate(uuid: UUID, vanished: Boolean) {
