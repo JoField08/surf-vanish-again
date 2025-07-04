@@ -23,4 +23,8 @@ surfPaperPluginApi {
         registerRequired("packetevents")
         registerSoft("PlaceholderAPI")
     }
+
+    tasks.shadowJar {
+        archiveFileName = "surf-vanish-paper-${project.version}.jar"
+    }
 }

@@ -12,3 +12,7 @@ velocityPluginFile {
 
     authors = listOf("red")
 }
+
+tasks.shadowJar {
+    archiveFileName = "surf-vanish-velocity-${project.version}.jar"
+}
