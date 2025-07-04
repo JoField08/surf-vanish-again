@@ -4,7 +4,7 @@ import dev.slne.surf.surfapi.core.api.util.requiredService
 import java.util.UUID
 
 interface VanishApi {
-    fun isVanished(uuid: UUID)
+    fun isVanished(uuid: UUID): Boolean
     fun setVanished(uuid: UUID, vanished: Boolean)
 
     fun canSee(uuid: UUID, canSee: UUID): Boolean
