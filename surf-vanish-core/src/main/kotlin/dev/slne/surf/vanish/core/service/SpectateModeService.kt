@@ -11,6 +11,8 @@ interface SpectateModeService {
     fun setSpectating(uuid: UUID, spectating: Boolean)
     fun getSpectators(): ObjectSet<UUID>
 
+    fun hasSpectator(uuid: UUID): Boolean
+
     fun nextPlayer(uuid: UUID): UUID?
     fun previousPlayer(uuid: UUID): UUID?
 

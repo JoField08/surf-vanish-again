@@ -85,6 +85,10 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
         return spectateModePlayers
     }
 
+    override fun hasSpectator(uuid: UUID): Boolean {
+        return currentSpectating.any { it.value == uuid }
+    }
+
     override fun nextPlayer(uuid: UUID): UUID? {
         val player = plugin.proxy.getPlayer(uuid).getOrNull() ?: return null
         val playerServerName = player.currentServer.getOrNull()?.serverInfo?.name ?: return null
