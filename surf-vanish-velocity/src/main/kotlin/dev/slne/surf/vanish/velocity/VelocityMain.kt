@@ -14,6 +14,7 @@ import dev.slne.surf.vanish.core.service.spectateModeService
 import dev.slne.surf.vanish.core.service.util.PluginMessageChannels
 import dev.slne.surf.vanish.velocity.command.spectatemode.SpectateModeCommand
 import dev.slne.surf.vanish.velocity.command.vanish.VanishCommand
+import dev.slne.surf.vanish.velocity.listener.PlayerConnectionListener
 import dev.slne.surf.vanish.velocity.listener.PlayerPacketListener
 import dev.slne.surf.vanish.velocity.util.toPluginChannel
 import org.slf4j.Logger
@@ -35,6 +36,7 @@ class VelocityMain @Inject constructor(
         proxy.channelRegistrar.register(PluginMessageChannels.SPECTATE_MODE_UPDATES.toPluginChannel())
 
         spectateModeService.startJob()
+        plugin.proxy.eventManager.register(this, PlayerConnectionListener())
         PacketEvents.getAPI().eventManager.registerListener(PlayerPacketListener(), PacketListenerPriority.NORMAL)
 
 
