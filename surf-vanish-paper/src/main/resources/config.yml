@@ -1,4 +1,4 @@
 announce-connection-change: true
 
-join-format: ""
-quit-format: ""
+vanish-format: "%player_name% left the game"
+reappear-format: "%player_name% joined the game"
