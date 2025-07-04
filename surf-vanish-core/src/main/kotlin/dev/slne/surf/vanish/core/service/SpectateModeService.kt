@@ -14,8 +14,6 @@ interface SpectateModeService {
     fun nextPlayer(uuid: UUID): UUID?
     fun previousPlayer(uuid: UUID): UUID?
 
-    fun viewInventory(uuid: UUID, target: UUID)
-
     companion object {
         val INSTANCE = requiredService<SpectateModeService>()
     }

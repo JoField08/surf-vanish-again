@@ -71,9 +71,9 @@ class VanishListener : PluginMessageListener {
 
                     if(announceConnectionChange) {
                         if(plugin.placeholderApi) {
-                            player.sendMessage(MiniMessage.miniMessage().deserialize(PlaceholderAPI.setPlaceholders(it, vanishFormat)))
+                            it.sendMessage(MiniMessage.miniMessage().deserialize(PlaceholderAPI.setPlaceholders(it, vanishFormat)))
                         } else {
-                            player.sendMessage(MiniMessage.miniMessage().deserialize(vanishFormat.replace("%player_name%", player.name)))
+                            it.sendMessage(MiniMessage.miniMessage().deserialize(vanishFormat.replace("%player_name%", player.name)))
                         }
                     }
                 }
@@ -118,8 +118,7 @@ class VanishListener : PluginMessageListener {
             val metaDataPacket = WrapperPlayServerEntityMetadata(
                 player.entityId,
                 listOf(
-                    EntityData(17, EntityDataTypes.BYTE, 0x7F.toByte()),
-                    EntityData(0, EntityDataTypes.BYTE, 0x02.toByte()),
+                    EntityData(17, EntityDataTypes.BYTE, 0x7F.toByte())
                 )
             )
 
@@ -133,9 +132,9 @@ class VanishListener : PluginMessageListener {
 
                     if(announceConnectionChange) {
                         if(plugin.placeholderApi) {
-                            player.sendMessage(MiniMessage.miniMessage().deserialize(PlaceholderAPI.setPlaceholders(it, reappearFormat)))
+                            it.sendMessage(MiniMessage.miniMessage().deserialize(PlaceholderAPI.setPlaceholders(it, reappearFormat)))
                         } else {
-                            player.sendMessage(MiniMessage.miniMessage().deserialize(reappearFormat.replace("%player_name%", player.name)))
+                            it.sendMessage(MiniMessage.miniMessage().deserialize(reappearFormat.replace("%player_name%", player.name)))
                         }
                     }
                 }

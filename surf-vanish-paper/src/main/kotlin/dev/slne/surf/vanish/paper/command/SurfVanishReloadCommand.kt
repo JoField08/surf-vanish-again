@@ -13,6 +13,7 @@ class SurfVanishReloadCommand(commandName: String) : CommandAPICommand(commandNa
         withPermission(VanishPermissionRegistry.VANISH_RELOAD)
         anyExecutor { executor, _ ->
             val ms = measureTimeMillis {
+                plugin.reloadConfig()
                 VanishListener.announceConnectionChange = plugin.config.getBoolean("announce-connection-change", true)
                 VanishListener.vanishFormat = plugin.config.getString("vanish-format") ?: ""
                 VanishListener.reappearFormat = plugin.config.getString("reappear-format") ?: ""

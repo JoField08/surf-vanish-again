@@ -1,15 +1,12 @@
 package dev.slne.surf.vanish.velocity
 
 import com.github.retrooper.packetevents.PacketEvents
-import com.github.retrooper.packetevents.event.PacketEvent
 import com.github.retrooper.packetevents.event.PacketListenerPriority
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.proxy.ProxyServer
-import com.velocitypowered.api.proxy.messages.ChannelIdentifier
-import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier
 import dev.slne.surf.vanish.core.service.spectateModeService
 import dev.slne.surf.vanish.core.service.util.PluginMessageChannels
 import dev.slne.surf.vanish.velocity.command.spectatemode.SpectateModeCommand
@@ -33,7 +30,8 @@ class VelocityMain @Inject constructor(
     fun onInitialization(event: ProxyInitializeEvent) {
         INSTANCE = this
         proxy.channelRegistrar.register(PluginMessageChannels.VANISH_UPDATES.toPluginChannel())
-        proxy.channelRegistrar.register(PluginMessageChannels.SPECTATE_MODE_UPDATES.toPluginChannel())
+        proxy.channelRegistrar.register(PluginMessageChannels.SPECTATE_MODE_TELEPORTS.toPluginChannel())
+        proxy.channelRegistrar.register(PluginMessageChannels.SPECTATE_MODE_GLOW.toPluginChannel())
 
         spectateModeService.startJob()
         plugin.proxy.eventManager.register(this, PlayerConnectionListener())

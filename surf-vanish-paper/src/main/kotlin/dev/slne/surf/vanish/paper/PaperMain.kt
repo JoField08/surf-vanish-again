@@ -19,7 +19,12 @@ class PaperMain() : SuspendingJavaPlugin() {
 
         Bukkit.getMessenger().registerIncomingPluginChannel(
             this,
-            PluginMessageChannels.SPECTATE_MODE_UPDATES,
+            PluginMessageChannels.SPECTATE_MODE_TELEPORTS,
+            SpectateModeListener()
+        )
+        Bukkit.getMessenger().registerIncomingPluginChannel(
+            this,
+            PluginMessageChannels.SPECTATE_MODE_GLOW,
             SpectateModeListener()
         )
         VanishListener.load()

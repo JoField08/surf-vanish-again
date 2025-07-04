@@ -99,7 +99,6 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
                 buildText {
                     appendPrefix()
                     error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
-                    decorate(TextDecoration.BOLD)
                 }
             }
             return null
@@ -119,7 +118,6 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
                 buildText {
                     appendPrefix()
                     error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
-                    decorate(TextDecoration.BOLD)
                 }
             }
             return null
@@ -128,6 +126,10 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
         currentSpectating[uuid] = next.uniqueId
         previousPlayers.computeIfAbsent(uuid) { ArrayDeque() }.addLast(next.uniqueId)
         pushTeleport(uuid, next.uniqueId)
+        current?.let {
+            pushGlow(player.uniqueId, current, false)
+        }
+        pushGlow(uuid, next.uniqueId, true)
 
         return next.uniqueId
     }
@@ -142,7 +144,6 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
                 buildText {
                     appendPrefix()
                     error("Es wurden keine weiteren Spieler gefunden, die du beobachten kannst.".toSmallCaps())
-                    decorate(TextDecoration.BOLD)
                 }
             }
             return null
@@ -153,10 +154,16 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
                 buildText {
                     appendPrefix()
                     error("Es wurde kein vorheriger Spieler gefunden, den du beobachten kannst.".toSmallCaps())
-                    decorate(TextDecoration.BOLD)
                 }
             }
             return null
+        }
+
+        val current = currentSpectating[player.uniqueId]
+
+
+        current?.let {
+            pushGlow(player.uniqueId, current, false)
         }
 
         history.removeLast()
@@ -164,12 +171,9 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
         currentSpectating[player.uniqueId] = previousPlayer
 
         pushTeleport(player.uniqueId, previousPlayer)
+        pushGlow(player.uniqueId, previousPlayer, true)
 
         return previousPlayer
-    }
-
-    override fun viewInventory(uuid: UUID, target: UUID) {
-
     }
 
     fun pushTeleport(uuid: UUID, target: UUID) {
@@ -182,6 +186,20 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
         dataOutput.writeUTF(uuid.toString())
         dataOutput.writeUTF(target.toString())
 
-        server.sendPluginMessage(PluginMessageChannels.SPECTATE_MODE_UPDATES.toPluginChannel(), outputStream.toByteArray())
+        server.sendPluginMessage(PluginMessageChannels.SPECTATE_MODE_TELEPORTS.toPluginChannel(), outputStream.toByteArray())
+    }
+
+    fun pushGlow(uuid: UUID, target: UUID, glow: Boolean) {
+        val player = plugin.proxy.getPlayer(uuid).getOrNull() ?: return
+        val server = player.currentServer.getOrNull() ?: return
+
+        val outputStream = ByteArrayOutputStream()
+        val dataOutput = DataOutputStream(outputStream)
+
+        dataOutput.writeUTF(uuid.toString())
+        dataOutput.writeUTF(target.toString())
+        dataOutput.writeBoolean(glow)
+
+        server.sendPluginMessage(PluginMessageChannels.SPECTATE_MODE_GLOW.toPluginChannel(), outputStream.toByteArray())
     }
 }
