@@ -30,8 +30,6 @@ class PaperMain() : SuspendingJavaPlugin() {
             SpectateModeListener()
         )
         VanishListener.load()
-        PacketEvents.getAPI().eventManager.registerListener(SpectateModeListener(),
-            PacketListenerPriority.NORMAL)
 
         placeholderApi = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")
 
