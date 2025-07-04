@@ -5,6 +5,7 @@ import dev.slne.surf.vanish.api.VanishApi
 import dev.slne.surf.vanish.core.service.util.VanishPermissionRegistry
 import dev.slne.surf.vanish.core.service.vanishService
 import dev.slne.surf.vanish.velocity.plugin
+import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.util.Services
 import reactor.core.publisher.zip
 import java.util.UUID
@@ -18,6 +19,10 @@ class VanishApiImpl : VanishApi, Services.Fallback {
 
     override fun setVanished(uuid: UUID, vanished: Boolean) {
         vanishService.setVanished(uuid, vanished)
+    }
+
+    override fun getVanishedPlayers(): ObjectSet<UUID> {
+        return vanishService.getVanishedPlayers()
     }
 
     override fun canSee(uuid: UUID, canSee: UUID): Boolean {
