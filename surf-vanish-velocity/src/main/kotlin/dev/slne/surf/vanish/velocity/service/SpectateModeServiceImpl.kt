@@ -74,6 +74,8 @@ class SpectateModeServiceImpl : SpectateModeService, Services.Fallback {
             spectateModePlayers.add(uuid)
         } else {
             spectateModePlayers.remove(uuid)
+            currentSpectating[uuid] = null
+            previousPlayers[uuid] = null
 
             val player = plugin.proxy.getPlayer(uuid).getOrNull() ?: return
 
