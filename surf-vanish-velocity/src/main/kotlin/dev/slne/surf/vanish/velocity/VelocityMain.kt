@@ -13,6 +13,7 @@ import dev.slne.surf.vanish.velocity.command.spectatemode.SpectateModeCommand
 import dev.slne.surf.vanish.velocity.command.vanish.VanishCommand
 import dev.slne.surf.vanish.velocity.listener.PlayerConnectionListener
 import dev.slne.surf.vanish.velocity.listener.PlayerPacketListener
+import dev.slne.surf.vanish.velocity.listener.SilentChestListener
 import dev.slne.surf.vanish.velocity.util.toPluginChannel
 import org.slf4j.Logger
 import kotlin.jvm.optionals.getOrNull
@@ -32,14 +33,16 @@ class VelocityMain @Inject constructor(
         proxy.channelRegistrar.register(PluginMessageChannels.VANISH_UPDATES.toPluginChannel())
         proxy.channelRegistrar.register(PluginMessageChannels.SPECTATE_MODE_TELEPORTS.toPluginChannel())
         proxy.channelRegistrar.register(PluginMessageChannels.SPECTATE_MODE_GLOW.toPluginChannel())
+        proxy.channelRegistrar.register(PluginMessageChannels.SILENT_CHEST.toPluginChannel())
+        proxy.eventManager.register(this, PlayerConnectionListener())
 
-        spectateModeService.startJob()
-        plugin.proxy.eventManager.register(this, PlayerConnectionListener())
         PacketEvents.getAPI().eventManager.registerListener(PlayerPacketListener(), PacketListenerPriority.NORMAL)
-
+        PacketEvents.getAPI().eventManager.registerListener(SilentChestListener(), PacketListenerPriority.NORMAL)
 
         SpectateModeCommand("spectatemode").register()
         VanishCommand("vanish").register()
+
+        spectateModeService.startJob()
     }
 
     companion object {
