@@ -5,7 +5,6 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
 import dev.slne.surf.vanish.core.service.util.PluginMessageChannels
 import dev.slne.surf.vanish.paper.command.SurfVanishCommand
-import dev.slne.surf.vanish.paper.listener.GlowingListener
 import dev.slne.surf.vanish.paper.listener.SilentChestListener
 import dev.slne.surf.vanish.paper.listener.SpectateModeListener
 import dev.slne.surf.vanish.paper.listener.VanishListener
@@ -36,8 +35,8 @@ class PaperMain() : SuspendingJavaPlugin() {
             PluginMessageChannels.SILENT_CHEST,
             SilentChestListener()
         )
+
         VanishListener.load()
-        PacketEvents.getAPI().eventManager.registerListener(GlowingListener(), PacketListenerPriority.NORMAL)
 
         placeholderApi = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")
 

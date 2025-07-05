@@ -32,6 +32,8 @@ class SilentChestPacketListener : PacketListener {
             return
         }
 
+        event.isCancelled = true
+
         this.pushInventoryOpening(player.uniqueId, packet.blockPosition.x, packet.blockPosition.y, packet.blockPosition.z)
     }
 
