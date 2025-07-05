@@ -15,7 +15,7 @@ import java.io.DataOutputStream
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
-class SilentChestListener : PacketListener {
+class SilentChestPacketListener : PacketListener {
     override fun onPacketReceive(event: PacketReceiveEvent) {
         if(event.packetType != PacketType.Play.Client.PLAYER_DIGGING) {
             return

@@ -6,7 +6,7 @@ import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
 import dev.slne.surf.vanish.core.service.util.PluginMessageChannels
 import dev.slne.surf.vanish.paper.command.SurfVanishCommand
 import dev.slne.surf.vanish.paper.listener.GlowingListener
-import dev.slne.surf.vanish.paper.listener.PlayerInteractListener
+import dev.slne.surf.vanish.paper.listener.SilentChestListener
 import dev.slne.surf.vanish.paper.listener.SpectateModeListener
 import dev.slne.surf.vanish.paper.listener.VanishListener
 import org.bukkit.Bukkit
@@ -31,7 +31,11 @@ class PaperMain() : SuspendingJavaPlugin() {
             PluginMessageChannels.SPECTATE_MODE_GLOW,
             SpectateModeListener()
         )
-        Bukkit.getPluginManager().registerEvents(PlayerInteractListener(), this)
+        Bukkit.getMessenger().registerIncomingPluginChannel(
+            this,
+            PluginMessageChannels.SILENT_CHEST,
+            SilentChestListener()
+        )
         VanishListener.load()
         PacketEvents.getAPI().eventManager.registerListener(GlowingListener(), PacketListenerPriority.NORMAL)
 

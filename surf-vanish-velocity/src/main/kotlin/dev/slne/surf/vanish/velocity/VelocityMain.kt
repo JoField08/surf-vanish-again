@@ -13,7 +13,7 @@ import dev.slne.surf.vanish.velocity.command.spectatemode.SpectateModeCommand
 import dev.slne.surf.vanish.velocity.command.vanish.VanishCommand
 import dev.slne.surf.vanish.velocity.listener.PlayerConnectionListener
 import dev.slne.surf.vanish.velocity.listener.PlayerPacketListener
-import dev.slne.surf.vanish.velocity.listener.SilentChestListener
+import dev.slne.surf.vanish.velocity.listener.SilentChestPacketListener
 import dev.slne.surf.vanish.velocity.util.toPluginChannel
 import org.slf4j.Logger
 import kotlin.jvm.optionals.getOrNull
@@ -37,7 +37,7 @@ class VelocityMain @Inject constructor(
         proxy.eventManager.register(this, PlayerConnectionListener())
 
         PacketEvents.getAPI().eventManager.registerListener(PlayerPacketListener(), PacketListenerPriority.NORMAL)
-        PacketEvents.getAPI().eventManager.registerListener(SilentChestListener(), PacketListenerPriority.NORMAL)
+        PacketEvents.getAPI().eventManager.registerListener(SilentChestPacketListener(), PacketListenerPriority.NORMAL)
 
         SpectateModeCommand("spectatemode").register()
         VanishCommand("vanish").register()
